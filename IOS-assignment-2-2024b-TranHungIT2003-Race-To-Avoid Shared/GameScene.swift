@@ -1,125 +1,94 @@
-//
-//  GameScene.swift
-//  IOS-assignment-2-2024b-TranHungIT2003-Race-To-Avoid Shared
-//
-//  Created by MacBook Pro Của A Tú on 23/08/2024.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2024B
+  Assessment: Assignment 2
+  Author: Tran Duy Hung
+  ID: s3928533
+  Created date: 12/08/2024
+  Last modified: 01/09/2024
+  Acknowledgement:
+*/
 
 import SpriteKit
 
 class GameScene: SKScene {
     
-    
+    private var track1: SKSpriteNode!
+    private var track2: SKSpriteNode!
     fileprivate var label : SKLabelNode?
     fileprivate var spinnyNode : SKShapeNode?
-
-    
-    class func newGameScene() -> GameScene {
-        // Load 'GameScene.sks' as an SKScene.
-        guard let scene = SKScene(fileNamed: "GameScene") as? GameScene else {
-            print("Failed to load GameScene.sks")
-            abort()
-        }
-        
-        // Set the scale mode to scale to fit the window
-        scene.scaleMode = .aspectFill
-        
-        return scene
-    }
-    
-    func setUpScene() {
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
-        
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 4.0
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
-    }
-    
     override func didMove(to view: SKView) {
-        self.setUpScene()
-    }
-
-    func makeSpinny(at pos: CGPoint, color: SKColor) {
-        if let spinny = self.spinnyNode?.copy() as! SKShapeNode? {
-            spinny.position = pos
-            spinny.strokeColor = color
-            self.addChild(spinny)
-        }
-    }
-    
-    override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-    }
-}
-
-#if os(iOS) || os(tvOS)
-// Touch-based event handling
-extension GameScene {
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+            super.didMove(to: view)
+            createRaceTrack()
+            startTrackScrolling()
         }
         
-        for t in touches {
-            self.makeSpinny(at: t.location(in: self), color: SKColor.green)
+    private func createRaceTrack() {
+            // Xóa tất cả các nút hiện có
+            removeAllChildren()
+            
+            let trackTexture = SKTexture(imageNamed: "road")
+
+            let trackWidth = trackTexture.size().width
+            let trackHeight = trackTexture.size().height
+
+            // Tính kích thước của track sao cho phù hợp với màn hình
+            let screenSize = size
+            let newTrackWidth = screenSize.width
+            let newTrackHeight = (screenSize.width / trackWidth) + 1000
+
+            // Tạo hai bản sao của đường đua
+            track1 = SKSpriteNode(texture: trackTexture)
+            track2 = SKSpriteNode(texture: trackTexture)
+
+            // Đặt kích thước cho các bản sao
+            track1.size = CGSize(width: newTrackWidth, height: newTrackHeight)
+            track2.size = track1.size
+            
+            // Đặt vị trí cho các bản sao
+            track1.position = CGPoint(x: frame.midX, y: frame.midY)
+            track2.position = CGPoint(x: frame.midX, y: frame.midY + newTrackHeight)
+
+            // Đặt zPosition để đường đua nằm dưới các đối tượng khác
+            track1.zPosition = -1
+            track2.zPosition = -1
+            
+            // Thêm đường đua vào scene
+            addChild(track1)
+            addChild(track2)
         }
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {
-            self.makeSpinny(at: t.location(in: self), color: SKColor.blue)
+        
+        private func startTrackScrolling() {
+            guard let track1 = track1, let track2 = track2 else { return }
+            
+            let trackHeight = track1.size.height
+            
+            let moveAction = SKAction.moveBy(x: 0, y: -trackHeight, duration: 5)
+            let resetAction = SKAction.moveBy(x: 0, y: trackHeight, duration: 0)
+            let sequence = SKAction.sequence([moveAction, resetAction])
+            let repeatAction = SKAction.repeatForever(sequence)
+            
+            // Thực hiện cuộn cho cả hai bản sao
+            track1.run(repeatAction)
+            track2.run(repeatAction)
+            
+            // Đảm bảo rằng track2 di chuyển ngay sau track1 để tạo hiệu ứng liên tục
+            track2.position = CGPoint(x: track1.position.x, y: track1.position.y + trackHeight)
         }
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {
-            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
+        
+        override func update(_ currentTime: TimeInterval) {
+            super.update(currentTime)
+            
+            // Cập nhật vị trí của track2 nếu cần thiết để đảm bảo liên tục
+            if let track1 = track1, let track2 = track2 {
+                if track1.position.y <= -track1.size.height {
+                    track1.position.y = track2.position.y + track2.size.height
+                }
+                if track2.position.y <= -track2.size.height {
+                    track2.position.y = track1.position.y + track1.size.height
+                }
+            }
         }
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches {
-            self.makeSpinny(at: t.location(in: self), color: SKColor.red)
-        }
-    }
-    
-   
 }
-#endif
-
-#if os(OSX)
-// Mouse-based event handling
-extension GameScene {
-
-    override func mouseDown(with event: NSEvent) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }
-        self.makeSpinny(at: event.location(in: self), color: SKColor.green)
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        self.makeSpinny(at: event.location(in: self), color: SKColor.blue)
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        self.makeSpinny(at: event.location(in: self), color: SKColor.red)
-    }
-
-}
-#endif
 
