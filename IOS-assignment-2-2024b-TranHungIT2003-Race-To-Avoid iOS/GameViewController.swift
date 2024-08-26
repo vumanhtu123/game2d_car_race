@@ -7,13 +7,16 @@ class GameViewController: UIViewController {
     var playerName: String?
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .green
+//        self.view.backgroundColor = .green
+//        if let skView = view as? SKView {
+   
 //        let scene = GameScene.newGameScene()
             // Present the scene
 //            let skView = self.view as! SKView
 //            skView.presentScene(scene)
         setupScene()
         hideBackButton()
+//        }
         // Thiết lập giao diện trò chơi tại đây
     }
     
@@ -21,8 +24,8 @@ class GameViewController: UIViewController {
           let skView = SKView(frame: view.bounds)
           skView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
           view.addSubview(skView)
-
           let scene = GameScene(size: skView.bounds.size)
+          scene.viewController = self
           scene.scaleMode = .aspectFill
           skView.presentScene(scene)
           

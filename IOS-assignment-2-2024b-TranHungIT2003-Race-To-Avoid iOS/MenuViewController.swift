@@ -78,7 +78,7 @@ class MenuViewController: UIViewController {
            let leaderboardVC = LeaderboardViewController()
            navigationController?.pushViewController(leaderboardVC, animated: true)
        }
-       
+        
        @objc private func showHowToPlay() {
            let howToPlayVC = HowToPlayViewController()
            navigationController?.pushViewController(howToPlayVC, animated: true)
