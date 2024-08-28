@@ -4,7 +4,7 @@ import SpriteKit
 import GameplayKit
 
 class GameViewController: UIViewController {
-    var playerName: String?
+    var playerName: String = "" // Giá trị mặc định
     override func viewDidLoad() {
         super.viewDidLoad()
 //        self.view.backgroundColor = .green
@@ -27,13 +27,11 @@ class GameViewController: UIViewController {
           let scene = GameScene(size: skView.bounds.size)
           scene.viewController = self
           scene.scaleMode = .aspectFill
+          scene.playerName = self.playerName
           skView.presentScene(scene)
           
           // Optional: Use playerName in the game scene or display it
-          if let name = playerName {
-              print("Player Name: \(name)")
-              // You can also pass this name to the GameScene if needed
-          }
+     
       }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -43,6 +41,11 @@ class GameViewController: UIViewController {
             return .all
         }
     }
+    
+    func showLeaderboard(withLeaderboard leaderboard: [[String: Any]]) {
+         let leaderboardVC = LeaderboardViewController()
+         navigationController?.pushViewController(leaderboardVC, animated: true)
+     }
     
     private func hideBackButton() {
           // Nếu view controller này nằm trong một navigation stack, nút back có thể được điều chỉnh ở đây
