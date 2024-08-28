@@ -19,6 +19,7 @@
 		EB0D84A52C78FC010014E004 /* LeaderboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0D84A42C78FC010014E004 /* LeaderboardViewController.swift */; };
 		EB0D84A72C78FC370014E004 /* HowToPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0D84A62C78FC370014E004 /* HowToPlayViewController.swift */; };
 		EB0D84A92C78FC4C0014E004 /* GameSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0D84A82C78FC4C0014E004 /* GameSettingsViewController.swift */; };
+		EBD779FE2C7F2543003A1F81 /* PlayScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD779FD2C7F2543003A1F81 /* PlayScore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		EB0D84A62C78FC370014E004 /* HowToPlayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowToPlayViewController.swift; sourceTree = "<group>"; };
 		EB0D84A82C78FC4C0014E004 /* GameSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsViewController.swift; sourceTree = "<group>"; };
 		EB0D84AB2C790BE40014E004 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		EBD779FD2C7F2543003A1F81 /* PlayScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayScore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				EB0D84A42C78FC010014E004 /* LeaderboardViewController.swift */,
 				EB0D84A62C78FC370014E004 /* HowToPlayViewController.swift */,
 				EB0D84A82C78FC4C0014E004 /* GameSettingsViewController.swift */,
+				EBD779FD2C7F2543003A1F81 /* PlayScore.swift */,
 			);
 			path = "IOS-assignment-2-2024b-TranHungIT2003-Race-To-Avoid iOS";
 			sourceTree = "<group>";
@@ -169,6 +172,7 @@
 				EB0D847E2C78E4370014E004 /* GameViewController.swift in Sources */,
 				EB0D84A72C78FC370014E004 /* HowToPlayViewController.swift in Sources */,
 				EB0D84A52C78FC010014E004 /* LeaderboardViewController.swift in Sources */,
+				EBD779FE2C7F2543003A1F81 /* PlayScore.swift in Sources */,
 				EB0D84A92C78FC4C0014E004 /* GameSettingsViewController.swift in Sources */,
 				EB0D84A32C78FAEB0014E004 /* MenuViewController.swift in Sources */,
 				EB0D847C2C78E4370014E004 /* AppDelegate.swift in Sources */,

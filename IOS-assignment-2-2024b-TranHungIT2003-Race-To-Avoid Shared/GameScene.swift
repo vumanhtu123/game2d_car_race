@@ -30,6 +30,13 @@ class GameScene: SKScene {
     private var lanes: [CGFloat] = []
     private var currentLane: Int = 1
     private var obstacles: [SKSpriteNode] = []
+    
+    private var scoreLabel: SKLabelNode!
+    private var score: Int = 0
+    
+    private var lastUpdateTime: TimeInterval = 0
+    var playerName: String?
+      
     weak var viewController: GameViewController?
     
     
@@ -38,10 +45,37 @@ class GameScene: SKScene {
             createRaceTrack()
             startTrackScrolling()
             addPauseButton()
-        setupLanes()
-        setupPlayer()
-        spawnObstacles()
+            setupLanes()
+            setupPlayer()
+            spawnObstacles()
+            setupScoreLabel()
         }
+    
+    private func setupScoreLabel() {
+         scoreLabel = SKLabelNode(fontNamed: "Arial")
+         scoreLabel.fontSize = 24
+         scoreLabel.fontColor = SKColor.white
+         scoreLabel.position = CGPoint(x: frame.midX, y: frame.size.height - 50)
+         scoreLabel.zPosition = 10
+         scoreLabel.text = "Score: 0"
+        
+        if let name = playerName {
+            let playerNameLabel = SKLabelNode(text: "Player: \(name)")
+            playerNameLabel.fontSize = 24
+            playerNameLabel.fontColor = SKColor.white
+            playerNameLabel.position = CGPoint(x: size.width / 2, y: size.height / 2)
+            playerNameLabel.zPosition = 10
+            addChild(playerNameLabel)
+        }
+            
+   
+         addChild(scoreLabel)
+     }
+     
+     private func increaseScore() {
+         score += 1
+         scoreLabel.text = "Score: \(score)"
+     }
         
     private func createRaceTrack() {
             // Xóa tất cả các nút hiện có
@@ -130,7 +164,7 @@ class GameScene: SKScene {
 
     private func pauseGame() {
         self.showPauseOverlay()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.view?.isPaused = true
                 // Ví dụ: Hiển thị một thông báo hoặc thực hiện hành động khác
                 print("Paused for 3 seconds")
@@ -192,9 +226,14 @@ class GameScene: SKScene {
             }
         }
        
-       private func quitGame() {
+    private func quitGame() {
            // Xử lý khi người dùng chọn thoát
            print("Quitting game...")
+           guard let name = playerName else { return }
+           let newScore = PlayerScore(name: name, score: score)
+           var leaderboard = loadLeaderboard() ?? []
+           leaderboard.append(newScore)
+           saveLeaderboard(leaderboard: leaderboard)
            viewController?.navigationController?.popViewController(animated: true)
            // Có thể thực hiện hành động quay lại màn hình chính hoặc thoát ứng dụng
        }
@@ -221,30 +260,38 @@ class GameScene: SKScene {
         }
     
     private func spawnObstacles() {
-            let obstacleTexture = SKTexture(imageNamed: "enemy_car_1") // Thay thế bằng tên ảnh của bạn
-            let obstacleWidth: CGFloat = 50
-            let obstacleHeight: CGFloat = 50
-            let spawnInterval: TimeInterval = 2.0
-            
-            let spawnAction = SKAction.run {
-                let obstacle = SKSpriteNode(texture: obstacleTexture)
-                obstacle.size = CGSize(width: obstacleWidth, height: obstacleHeight)
-                let randomLaneIndex = Int(arc4random_uniform(UInt32(self.lanes.count)))
-                obstacle.position = CGPoint(x: self.lanes[randomLaneIndex], y: self.size.height + obstacleHeight)
-                obstacle.zPosition = 1
-                self.addChild(obstacle)
-                self.obstacles.append(obstacle)
-                
-                let moveAction = SKAction.moveBy(x: 0, y: -self.size.height - obstacleHeight, duration: 5)
-                let removeAction = SKAction.removeFromParent()
-                let sequence = SKAction.sequence([moveAction, removeAction])
-                obstacle.run(sequence)
-            }
-            
-            let waitAction = SKAction.wait(forDuration: spawnInterval)
-            let spawnSequence = SKAction.sequence([spawnAction, waitAction])
-            run(SKAction.repeatForever(spawnSequence))
-        }
+           let obstacleTexture = SKTexture(imageNamed: "enemy_car_1") // Thay thế bằng tên ảnh của bạn
+           let obstacleWidth: CGFloat = 50
+           let obstacleHeight: CGFloat = 50
+           let spawnInterval: TimeInterval = 2.0
+           
+           let spawnAction = SKAction.run {
+               let obstacle = SKSpriteNode(texture: obstacleTexture)
+               obstacle.size = CGSize(width: obstacleWidth, height: obstacleHeight)
+               let randomLaneIndex = Int(arc4random_uniform(UInt32(self.lanes.count)))
+               obstacle.position = CGPoint(x: self.lanes[randomLaneIndex], y: self.size.height + obstacleHeight)
+               obstacle.zPosition = 1
+               self.addChild(obstacle)
+               self.obstacles.append(obstacle)
+               
+               let moveAction = SKAction.moveBy(x: 0, y: -self.size.height - obstacleHeight, duration: 5)
+               let removeAction = SKAction.run { [weak self] in
+                   if let index = self?.obstacles.firstIndex(of: obstacle) {
+                       self?.obstacles.remove(at: index)
+                   }
+                   obstacle.removeFromParent()
+                   
+                   // Kiểm tra nếu người chơi đã vượt qua xe cản đường
+                   self?.increaseScore()
+               }
+               let sequence = SKAction.sequence([moveAction, removeAction])
+               obstacle.run(sequence)
+           }
+           
+           let waitAction = SKAction.wait(forDuration: spawnInterval)
+           let spawnSequence = SKAction.sequence([spawnAction, waitAction])
+           run(SKAction.repeatForever(spawnSequence))
+       }
         
         override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
             guard let touch = touches.first else { return }
