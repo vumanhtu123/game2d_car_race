@@ -15,6 +15,7 @@ class LeaderboardViewController: UIViewController {
             leaderboard = savedLeaderboard
         } else {
             // Nếu không có dữ liệu, bạn có thể khởi tạo dữ liệu mẫu
+            leaderboard = []
         }
         
         setupLeaderboard()
