@@ -1,11 +1,42 @@
-//
-//  AppDelegate.swift
-//  IOS-assignment-2-2024b-TranHungIT2003-Race-To-Avoid iOS
-//
-//  Created by MacBook Pro Của A Tú on 23/08/2024.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2024B
+  Assessment: Assignment 2
+  Author: Tran Duy Hung
+  ID: s3928533
+  Created date: 12/08/2024
+  Last modified: 01/09/2024
+  Acknowledgement:
+*/
 
+import AVFoundation
 import UIKit
+
+class MusicManager {
+    static let shared = MusicManager()
+    var audioPlayer: AVAudioPlayer?
+
+    private init() {}
+
+    func playLocalMusic() {
+          guard let path = Bundle.main.path(forResource: "musicbg", ofType: "mp3") else {
+              print("Không tìm thấy file nhạc.")
+              return
+          }
+
+          let url = URL(fileURLWithPath: path)
+
+          do {
+              audioPlayer = try AVAudioPlayer(contentsOf: url)
+              audioPlayer?.numberOfLoops = -1 // Lặp lại vô hạn
+              audioPlayer?.play()
+          } catch {
+              print("Không thể phát nhạc: \(error.localizedDescription)")
+          }
+      }
+}
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,6 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        MusicManager.shared.playLocalMusic()
 //         Override point for customization after application launch.
          window = UIWindow(frame: UIScreen.main.bounds)
          let menuVC = MenuViewController()

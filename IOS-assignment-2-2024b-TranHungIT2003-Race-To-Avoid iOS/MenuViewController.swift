@@ -1,9 +1,14 @@
-//
-//  GameViewController.swift
-//  IOS-assignment-2-2024b-TranHungIT2003-Race-To-Avoid iOS
-//
-//  Created by MacBook Pro Của A Tú on 23/08/2024.
-//
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2024B
+  Assessment: Assignment 2
+  Author: Tran Duy Hung
+  ID: s3928533
+  Created date: 12/08/2024
+  Last modified: 01/09/2024
+  Acknowledgement:
+*/
 
 import UIKit
 import SpriteKit

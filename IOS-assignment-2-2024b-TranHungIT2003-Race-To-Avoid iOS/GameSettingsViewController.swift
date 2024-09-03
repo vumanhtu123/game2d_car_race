@@ -1,9 +1,22 @@
+/*
+  RMIT University Vietnam
+  Course: COSC2659 iOS Development
+  Semester: 2024B
+  Assessment: Assignment 2
+  Author: Tran Duy Hung
+  ID: s3928533
+  Created date: 12/08/2024
+  Last modified: 01/09/2024
+  Acknowledgement:
+*/
 import UIKit
 import SpriteKit
 import GameplayKit
 
 class GameSettingsViewController: UIViewController {
     weak var viewController: GameViewController?
+    var isDarkMode: Bool = false
+
     
     let changeLanguageButton: UIButton = {
         let button = UIButton(type: .system)
@@ -11,11 +24,39 @@ class GameSettingsViewController: UIViewController {
         button.addTarget(self, action: #selector(changeLanguageTapped), for: .touchUpInside)
         return button
     }()
+    
+    let buttonChange: UIButton = {
+        let toggleButton = UIButton(type: .system)
+        toggleButton.setTitle("Chuyển chế độ", for: .normal)
+        toggleButton.addTarget(self, action: #selector(toggleDarkMode), for: .touchUpInside)
+        return toggleButton
+    }()
+
+    
+    @objc func toggleDarkMode() {
+        isDarkMode.toggle() // Đổi trạng thái
+        updateUI() // Cập nhật giao diện
+    }
+    
+    func updateUI() {
+        if isDarkMode {
+            // Cập nhật giao diện cho chế độ tối
+            view.backgroundColor = UIColor.black
+            // Thay đổi các tài nguyên khác cho chế độ tối
+        } else {
+            // Cập nhật giao diện cho chế độ sáng
+            view.backgroundColor = UIColor.white
+            // Thay đổi các tài nguyên khác cho chế độ sáng
+        }
+    }
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(changeLanguageButton)
-           setupButtonConstraints()
+        view.addSubview(buttonChange)
+        updateUI()
+        setupButtonConstraints()
         // Thiết lập giao diện cài đặt trò chơi tại đây
     }
     
@@ -24,6 +65,11 @@ class GameSettingsViewController: UIViewController {
         NSLayoutConstraint.activate([
             changeLanguageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             changeLanguageButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        buttonChange.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            buttonChange.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonChange.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100)
         ])
     }
     

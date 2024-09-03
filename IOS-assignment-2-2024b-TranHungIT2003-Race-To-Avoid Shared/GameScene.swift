@@ -68,7 +68,7 @@ class GameScene: SKScene {
             let playerNameLabel = SKLabelNode(text: "Player: \(name)")
             playerNameLabel.fontSize = 24
             playerNameLabel.fontColor = SKColor.white
-            playerNameLabel.position = CGPoint(x: size.width / 2, y: size.height / 2)
+            playerNameLabel.position = CGPoint(x: size.width / 2, y: size.height - 130)
             playerNameLabel.zPosition = 10
             addChild(playerNameLabel)
         }
